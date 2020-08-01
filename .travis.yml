@@ -1,0 +1,26 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t xdcc/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true xdcc/react-test npm test
+
+after_success:
+  - docker build -t xdcc/multi-client ./client
+  - docker build -t xdcc/multi-nginx ./nginx
+  - docker build -t xdcc/multi-server ./server
+  - docker build -t xdcc/multi-worker ./worker
+
+  # Login to docker cli
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # Push images to docker hub
+  - docker push xdcc/multi-client
+  - docker push xdcc/multi-nginx
+  - docker push xdcc/multi-server
+  - docker push xdcc/multi-worker
+
+language: generic
