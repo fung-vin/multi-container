@@ -11,7 +11,7 @@
     {
       "name": "nginx",
       "image": "xdcc/multi-nginx",
-      "hostname": "client",
+      "hostname": "nginx",
       "essential": true,
       "portMappings": [
         {
